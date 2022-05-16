@@ -1,10 +1,11 @@
 import './App.css';
+import { useState, useEffect } from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {increment, decrement, restart} from './reduxToolkit/Reducer';
 function App() {
   const count = useSelector((state)=> state.counter.value);
   const dispatch = useDispatch();
-
+  
   const handleUp = ()=>{
     dispatch(increment());
   }
@@ -15,9 +16,47 @@ function App() {
     dispatch(decrement());
   }
 
+
+  // darkMode
+  const [checked, setChecked] = useState(
+    localStorage.getItem("theme") === "dark" ? true : false
+  );
+  useEffect(() => {
+    document
+      .getElementsByTagName("HTML")[0]
+      .setAttribute("data-theme", localStorage.getItem("theme"));
+  }, [checked]);
+
+  const toggleThemeChange = () => {
+    if (checked === false) {
+      localStorage.setItem("theme", "dark");
+      setChecked(true);
+    } else {
+      localStorage.setItem("theme", "light");
+      setChecked(false);
+    }
+  };
+
   return (
-    <div className="App container">
-      <div className='card shadow'>
+    <div className={`${checked  ? "App container-fluid" : "App container-fluid dark"}`}>
+      <div className='text-center mode'>
+        <p className={`${checked ? 'text-dark' : 'text-light'}`} >Dark Mode</p>
+          <label>
+            
+          <input
+              type="checkbox"
+              id='mode'
+              class="form-check-input"
+              defaultChecked={checked}
+              onChange={() => toggleThemeChange()}
+            />
+            
+          </label>
+        
+          <br/>
+
+      </div>
+      <div className={`${checked ? 'card shadow' : 'card shadow card-dark'}`}>
         <div className='card-header text-center border-0'>
           <h1>COUNTER</h1>
         </div>
